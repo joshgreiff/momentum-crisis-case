@@ -1,44 +1,63 @@
-# Momentum Crisis Command Center (starter)
+# Momentum Crisis Command Center
 
-A minimal Next.js, Supabase, Resend inbound email and OpenAI executive-analysis system for the fictional BUSMHR 2292 Momentum simulation.
+Petitto / Team #6 / 2:15 — BUSMHR 2292 crisis simulation (Oct 30 – Nov 6, 2026).
 
-## Setup
+A Next.js, Supabase and OpenAI tool that turns each crisis update into six executive analyses and one AI-proposed CEO recommendation for the team to review. Nothing is sent or decided automatically.
+
+## Local development
 
 1. `npm install`
-2. Create a Supabase project and run `supabase/schema.sql`, then `supabase/migrations/002_crisis_workflow.sql`, in SQL Editor.
-3. Copy `.env.example` to `.env.local` and fill in the keys. `NEXT_PUBLIC_SUPABASE_URL` must be the bare project URL (`https://<ref>.supabase.co`). Never commit `.env.local`.
-4. `npm run dev` and open http://localhost:3000. Use the "Submit a crisis update" form to paste a fictional update and click **Analyze Crisis**. The form and Retry buttons only work under `npm run dev` on `localhost`/`127.0.0.1`, because there is no authentication yet.
+2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…`, `003_…`).
+3. Copy `.env.example` to `.env.local` and fill it in. `NEXT_PUBLIC_SUPABASE_URL` must be the bare project URL (`https://<ref>.supabase.co`). Never commit `.env.local`.
+4. `npm run dev`, open http://localhost:3000. Without `TEAM_PASSCODE`/`SESSION_SECRET`, the app runs only on `localhost` in dev mode; set both to test the passcode login locally.
+
+## Deploying to Vercel
+
+1. Push this folder to a GitHub repo and import it in Vercel (framework: Next.js, no build settings to change), or run `npx vercel` from this folder.
+2. In **Project → Settings → Environment Variables** (Production), set:
+
+   | Variable | Required | Notes |
+   |---|---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | yes | `https://<ref>.supabase.co` |
+   | `SUPABASE_SERVICE_ROLE_KEY` | yes | server-only; mark Sensitive |
+   | `OPENAI_API_KEY` | yes | server-only; mark Sensitive |
+   | `TEAM_PASSCODE` | yes | shared with the team; 12+ characters |
+   | `SESSION_SECRET` | yes | random, 32+ characters (`openssl rand -base64 48`); never shared |
+   | `OPENAI_MODEL` | no | default `gpt-4.1-mini` |
+   | `MAX_UPDATES_PER_HOUR` / `MAX_UPDATES_PER_DAY` / `MAX_ATTEMPTS_PER_UPDATE` | no | defaults 10 / 40 / 3 |
+   | `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET` | no | only for inbound email |
+
+   If `TEAM_PASSCODE` or `SESSION_SECRET` is missing in production, every page is locked (fail closed).
+3. Deploy, open the URL, sign in with the passcode, and submit one **Practice** update to confirm analysis completes.
+
+## Access and safety
+
+- Everyone shares one passcode (no accounts). Signing in sets an 8-day, httpOnly, signed cookie. Changing `TEAM_PASSCODE` or `SESSION_SECRET` signs everyone out.
+- All pages and the AI endpoint require the cookie (`middleware.ts`). The only public route is `/api/inbound`, which accepts only Resend-signed webhooks and stores the email without running AI.
+- Keys and the passcode are used only on the server and never reach the browser bundle.
+- Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
+- Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
+- Recommendations are labeled AI-proposed. Approve/Reject is disabled; the decisions API refuses writes. Draft communications are never sent.
 
 ## How analysis works
 
-Manual and email updates share one pipeline (`lib/agents.ts`): the update is stored, atomically claimed (`claim_event`, so it is never processed twice), facts are extracted, six executives (CEO, Globex President, COO, CFO, CMO, CHRO) analyze it concurrently, and the CEO consolidates one proposed decision. Every agent receives all files in `knowledge/` (case, lecture transcripts, convoy diagram text) plus earlier updates and proposed decisions. All model output is validated against Zod schemas in `lib/schemas.ts`. Failures are recorded on the event; Retry re-runs only the steps that did not complete.
+Submitting stores the update with status `received`. The dashboard then calls `POST /api/events/<id>/process`, which atomically claims the event (`claim_event`, a 10-minute lease, so it never runs twice), extracts facts, runs six executive analyses concurrently, consolidates the CEO recommendation, and only then responds (Vercel `maxDuration` is 300s; a run typically takes 20–40s). Every step is saved to Supabase as it finishes. If the request is interrupted or a step fails, the event is marked failed or its lease expires; opening the dashboard resumes it automatically (up to the attempt limit), and Retry re-runs only the missing steps. No work relies on a function running after its response.
+
+Every agent receives all files in `knowledge/` plus earlier instructor updates and proposed decisions. All model output is validated against the Zod schemas in `lib/schemas.ts`.
 
 ## Checks
 
-- `npm run typecheck`, `npm test` (unit tests with an in-memory store and fake model), `npm run build`
-- `npm run test:live` runs one labeled `[TEST]` update through real OpenAI and Supabase (costs a few cents and writes to the database).
-5. Deploy to Vercel, configure the same environment variables, and protect access before sharing.
-6. In Resend, verify a domain you own, configure inbound email receiving for `crisis@your-domain.example`, and set the `email.received` webhook URL to `https://YOUR_APP.vercel.app/api/inbound`. Copy the webhook signing secret to `RESEND_WEBHOOK_SECRET`.
-7. Forward one **test** message to the dedicated address and verify that the dashboard shows the event, six analyses, and a proposed decision.
+- `npm run typecheck`, `npm test`, `npm run build`
+- `npm run test:live`: one practice update through real OpenAI and Supabase (a few cents).
+- `npm run demo:check [-- --submit]`: browser walkthrough in installed Chrome. Against a deployment: `BASE_URL=https://<app>.vercel.app E2E_PASSCODE=… npm run demo:check`.
 
-## Important limitations before production use
+## Optional: inbound email (Resend)
 
-- **Authentication is not implemented.** Dashboard exposes case content to anyone who knows the deployment URL. Add Supabase Auth / access controls or Vercel deployment protection before use.
-- The decisions API intentionally rejects changes until authentication is implemented. The dashboard is review-only. Do not claim approvals are recorded.
-- Email analysis runs after the webhook responds (`after()`), within the function's time limit. Move it to Inngest, QStash, or a durable queue before relying on continuous monitoring.
-- Failed or stalled events can be retried manually from the local dashboard; there is no automatic retry worker yet.
-- Attachments are not downloaded; add PDF/DOCX attachment ingestion separately.
-- Resend webhook events provide an email ID; this app fetches the body via the Receiving API. Verify compatibility with the Resend SDK version you install.
-- The whole `knowledge/` folder (about 15k tokens) is sent to every agent call. Images inside documents are not read; `Convoy of trucks diagram-1 (image transcription).md` is a hand transcription of the diagram. Add retrieval if the library grows substantially.
-- Consider instructor/course AI-use rules and obtain permission before processing team or private messages.
-- No automatic external sending. All output is draft analysis.
+Verify a domain in Resend, enable inbound receiving, set the `email.received` webhook to `https://<app>.vercel.app/api/inbound`, and set `RESEND_API_KEY` and `RESEND_WEBHOOK_SECRET`. Emailed updates are stored as instructor updates and analyzed the next time someone opens the dashboard.
 
-## Next milestones
+## Limitations
 
-1. Add Supabase Auth and team roles.
-2. Add durable queue, retries, processing logs and rate limiting.
-3. Ingest the case, operations diagram and transcripts into a searchable source library with document citations.
-4. Add authenticated approval/rejection and a decision audit trail.
-5. Add a board briefing export and Slack/email notifications.
-# momentum-crisis-case
-# momentum-crisis-case
+- One shared passcode; no individual accounts or audit trail of who viewed or submitted. The login throttle is per server instance (best effort).
+- Attachments are not downloaded. Images inside documents are not read; the convoy diagram is a hand transcription.
+- The whole `knowledge/` folder (~15k tokens) is sent with every agent call.
+- Check course AI-use rules before processing private team messages.
