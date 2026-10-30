@@ -37,7 +37,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 - Keys and the passcode are used only on the server and never reach the browser bundle.
 - Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
 - Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
-- Recommendations are labeled AI-proposed. Under **Team decision**, the team writes what it actually decided (optionally starting from the AI text). It is stored separately from the AI proposal, can be edited, and is given to the AI as context for later updates. Nothing is sent or executed, and draft communications are never sent.
+- Recommendations are labeled AI-proposed. Under **Team decision**, the team pastes the email(s) it actually sent or the decision it made. It is stored separately from the AI proposal, can be edited, and is given to the AI as already-sent context for later updates. The app itself never sends anything. Nothing is sent or executed, and draft communications are never sent.
 
 ## How analysis works
 

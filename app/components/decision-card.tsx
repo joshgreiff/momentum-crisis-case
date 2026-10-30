@@ -57,7 +57,7 @@ export function TeamDecision({decision}:{decision:DecisionRow|undefined}){
  const d=decisionDetails(decision);
  return <Block label="Team decision" aside={decided&&decision?.decided_at?<span className="text-xs text-slate-500">Recorded {new Date(decision.decided_at).toLocaleString()}</span>:undefined}>
   {!decision?<p className="text-sm text-slate-500">The team records its decision once the CEO recommendation is ready.</p>:<>
-   {!decided&&<p className="mb-3 text-sm text-slate-500">Discuss as a team, then write what you decided. It is saved here and given to the AI as context for later updates. Nothing is sent or executed.</p>}
+   {!decided&&<p className="mb-3 text-sm text-slate-500">Paste the email or decision the team sent in response. It is treated as already sent and given to the AI as context for later updates. The app itself never sends anything.</p>}
    <TeamDecisionEditor key={decision.id} id={decision.id} saved={decision.team_response?.trim()??''} suggestion={d?.recommendation_summary||decision.proposal}/>
   </>}
  </Block>;

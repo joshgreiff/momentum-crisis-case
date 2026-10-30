@@ -32,7 +32,7 @@ describe('crisis pipeline',()=>{
   const agentCalls=ai.calls.filter(c=>c.name==='executive_analysis');
   for(const c of agentCalls){
    expect(c.instructions[0]).toContain('Momentum case text');
-   expect(c.instructions[0]).toContain('Never claim or imply that an action has been taken');
+   expect(c.instructions[0]).toContain('never claim or imply that an action has been taken');
    expect(c.input).toContain('<crisis_update');
    expect(c.input).not.toContain('<executive_analyses>');
   }
@@ -90,7 +90,7 @@ describe('crisis pipeline',()=>{
   const later=ai.calls.filter(c=>c.input.includes('Update 3')&&c.name==='executive_analysis')[0];
   expect(later.input).toContain('Update 2: trucks halted');
   expect(later.input).toContain('AI-proposed response: Pause autonomous convoys');
-  expect(later.input).toContain('Team decision (what the team actually chose): Keep convoys paused; CMO drafts a holding statement.');
+  expect(later.input).toContain('Team decision (already sent by the team): Keep convoys paused; CMO drafts a holding statement.');
   expect(later.input).not.toContain('Practice: fake recall');
  });
 

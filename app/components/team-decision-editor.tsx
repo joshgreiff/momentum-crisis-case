@@ -18,7 +18,7 @@ export function TeamDecisionEditor({id,saved,suggestion}:{id:string;saved:string
  return <div>
   <label htmlFor={`team-response-${id}`} className="sr-only">Our decision</label>
   <textarea id={`team-response-${id}`} value={text} onChange={e=>setText(e.target.value)} disabled={pending} rows={6} maxLength={8000}
-   placeholder="What did the team decide? What you'll do, who owns it, and what you'll communicate."
+   placeholder="Paste the email(s) the team sent, or describe the decision you made."
    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm leading-relaxed focus:border-slate-900 focus:outline-none"/>
   <div className="mt-2 flex flex-wrap items-center gap-2">
    <button type="button" onClick={save} disabled={pending||(!text.trim()&&!saved)} className={`${btn} border-slate-900 bg-slate-900 text-white hover:bg-slate-700`}>{pending?'Saving…':'Save team decision'}</button>
