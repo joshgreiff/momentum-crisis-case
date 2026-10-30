@@ -9,3 +9,9 @@
 - Evaluation areas, at a minimum: Teamwork and Decision Making, Effective Communication, and Time Management. The assignment is intentionally ambiguous to simulate a real scenario.
 - Board presentations: Friday, November 6. 15 minutes total per team, including time for Board questions; the team distributes presentation time among members. The Board will interrupt with questions ("why did you do this?", defend your decisions) to test how decisions hold up. Delivery is assessed (eye contact, transitions, volume).
 - In presentations: do not repeat a good point someone already made; use data and figures to support the team's case; do not summarize the case, because the Board already knows it.
+
+## Day 1 additional reminders (posted Oct 30, 4:10 PM)
+- Be thorough and specific. Do not just say you want to "communicate with your employees about what is happening"; email the actual message you are sending to the employees.
+- If you want operations to do something, send a specific message to that team about what needs to be done. If you want to contact a person impacted by the crisis, send them a specific message and your action plan. The same applies to all relevant stakeholders and decisions throughout the week.
+- Check emails regularly, communicate with teammates, and never let more than 24 hours pass without sending emails.
+- Be proactive, not just reactive: send more emails than just replies to the updates received.
