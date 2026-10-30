@@ -1,6 +1,6 @@
 import type {AgentAnalysisRow,DecisionRow,EventRow} from '../lib/db';
 import type {Llm,StructuredRequest} from '../lib/llm';
-import type {AgentAnalysis,Decision,Extraction} from '../lib/schemas';
+import type {AgentAnalysis,Decision,Extraction,QuestionAnswer} from '../lib/schemas';
 import type {Store} from '../lib/store';
 import type {z} from 'zod';
 
@@ -47,6 +47,8 @@ export const sampleExtraction:Extraction={confirmed_facts:['Trucks stopped on I-
 export const sampleAnalysis=(headline:string):AgentAnalysis=>({headline,confirmed_facts:[{fact:'Trucks stopped on I-70',source:'Crisis update'}],case_connections:[{source:'case.md',point:'Earlier odd braking incidents'}],assumptions:['Cause unknown'],risks:[{risk:'Collision',likelihood:'medium',impact:'high',mitigation:'Halt autonomous followers'}],stakeholder_impacts:[{stakeholder:'Drivers',impact:'Safety concern',severity:'high'}],recommendations:[{action:'Pause L4 convoys',rationale:'Safety first',priority:'immediate'}],open_questions:['Root cause?']});
 export const sampleDecision:Decision={title:'Pause autonomous convoys',proposal:'Pause L4 followers pending investigation',rationale:'Safety first',situation_brief:'An L4 follower truck braked unexpectedly on I-70. No injuries. Cause unknown.',recommendation_summary:'Pause L4 followers while Globex investigates.',alternatives_considered:[{option:'Continue operations',tradeoff:'Unacceptable safety risk'}],immediate_actions:[{action:'Issue pause',owner:'COO',timeframe:'1 hour'}],tradeoffs:['Delivery delays'],key_risks:['Customer churn'],dissenting_views:[{role:'CFO',concern:'Contract penalties'}],draft_communications:[{audience:'Employees',key_message:'Safety first'}],information_needed:['Root cause'],confidence:'medium'};
 
+export const sampleAnswer:QuestionAnswer={answer:'Exposure depends on findings not yet available.',sources:[{source:'Crisis update',point:'Three crashes reported'}],unknowns:['Injury details']};
+
 type Call={name:string;instructions:string[];input:string};
 /** Fake LLM: records calls, tracks concurrency, and can fail selected roles. */
 export function fakeLlm(opts:{failRoles?:Set<string>;delayMs?:number}={}){
@@ -60,7 +62,7 @@ export function fakeLlm(opts:{failRoles?:Set<string>;delayMs?:number}={}){
     await new Promise(r=>setTimeout(r,opts.delayMs??5));
     const role=/\(role: ([^)]+)\)/.exec(req.instructions.at(-1)??'')?.[1];
     if(role&&opts.failRoles?.has(role))throw new Error(`simulated ${role} failure with key sk-proj-abcdefghijklmnop`);
-    const out=req.name==='crisis_extraction'?sampleExtraction:req.name==='executive_analysis'?sampleAnalysis(`${role} view`):sampleDecision;
+    const out=req.name==='crisis_extraction'?sampleExtraction:req.name==='executive_analysis'?sampleAnalysis(`${role} view`):req.name==='executive_question'?sampleAnswer:sampleDecision;
     return req.schema.parse(out);
    }finally{inFlight--}
   },

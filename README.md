@@ -7,7 +7,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 ## Local development
 
 1. `npm install`
-2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…`, `003_…`, `004_…`).
+2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…` through `005_…`).
 3. Copy `.env.example` to `.env.local` and fill it in. `NEXT_PUBLIC_SUPABASE_URL` must be the bare project URL (`https://<ref>.supabase.co`). Never commit `.env.local`.
 4. `npm run dev`, open http://localhost:3000. Without `TEAM_PASSCODE`/`SESSION_SECRET`, the app runs only on `localhost` in dev mode; set both to test the passcode login locally.
 
@@ -25,6 +25,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
    | `SESSION_SECRET` | yes | random, 32+ characters (`openssl rand -base64 48`); never shared |
    | `OPENAI_MODEL` | no | default `gpt-4.1-mini` |
    | `MAX_UPDATES_PER_HOUR` / `MAX_UPDATES_PER_DAY` / `MAX_ATTEMPTS_PER_UPDATE` | no | defaults 10 / 40 / 3 |
+| `MAX_QUESTIONS_PER_HOUR` | no | default 30 (one model call each) |
    | `RESEND_API_KEY`, `RESEND_WEBHOOK_SECRET` | no | only for inbound email |
 
    If `TEAM_PASSCODE` or `SESSION_SECRET` is missing in production, every page is locked (fail closed).
@@ -37,6 +38,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 - Keys and the passcode are used only on the server and never reach the browser bundle.
 - Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
 - Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
+- **Ask the executives:** on any update, a team member picks an executive and asks a question; the AI answers from that role using the update, the six analyses, the team's sent decisions, earlier instructor updates and `knowledge/`. Answers are saved for everyone and are advisory only.
 - Recommendations are labeled AI-proposed. Under **Team decision**, the team pastes the email(s) it actually sent or the decision it made. It is stored separately from the AI proposal, can be edited, and is given to the AI as already-sent context for later updates. The app itself never sends anything. Nothing is sent or executed, and draft communications are never sent.
 
 ## How analysis works

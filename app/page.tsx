@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import {db,type EventRow,type DecisionRow,type AgentAnalysisRow} from '../lib/db';
-import {AgentAnalysisDisplaySchema,ROLES} from '../lib/schemas';
+import {AgentAnalysisDisplaySchema,QuestionAnswerSchema,ROLES} from '../lib/schemas';
+import type {QuestionRow} from '../lib/questions';
+import {Questions,type QuestionItem} from './components/questions';
 import {EXECUTIVES} from '../lib/roles';
 import {teamAccess} from './access';
 import {signOut} from './login/actions';
@@ -42,6 +44,12 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
  const anyRunning=events.some(e=>eventState(e,now)==='running');
  const showForm=params.view==='new'||(!events.length&&!error);
  const selected=showForm?undefined:events.find(e=>e.id===params.event)??events[0];
+ let questions:QuestionItem[]=[],questionsError='';
+ if(selected&&!error){
+  const q=await db().from('questions').select('*').eq('event_id',selected.id).order('created_at',{ascending:false}).limit(50).returns<QuestionRow[]>();
+  if(q.error){logQueryErrors([['questions',q]]);questionsError='Questions are unavailable. If this is new, run supabase/migrations/005_questions.sql.'}
+  else questions=(q.data??[]).map(r=>{const role=ROLES.find(x=>x===r.role);const a=QuestionAnswerSchema.safeParse(r.answer);return {id:r.id,role:r.role,label:role?`${ASSIGNMENTS[role].student} · ${ASSIGNMENTS[role].title}`:r.role,question:r.question,answer:a.success?a.data:null,created_at:r.created_at}});
+ }
  const pending=decisions.filter(d=>!hasTeamDecision(d)).length;
  const chronological=[...events].reverse();
  const instructorCount=events.filter(e=>!e.is_demo).length;
@@ -81,7 +89,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
    <main className="min-w-0 space-y-5">
     {error&&<p role="alert" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</p>}
     {showForm?<NewUpdate consoleEnabled={consoleEnabled}/>
-    :selected?<EventView event={selected} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled}/>
+    :selected?<EventView event={selected} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled} questions={questions} questionsError={questionsError}/>
     :<p className="text-sm text-slate-500">No crisis update selected.</p>}
    </main>
   </div>
@@ -101,7 +109,7 @@ function NewUpdate({consoleEnabled}:{consoleEnabled:boolean}){
  </>;
 }
 
-function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:EventRow;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean}){
+function EventView({event:x,analyses,decision,state,consoleEnabled,questions,questionsError}:{event:EventRow;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean;questions:QuestionItem[];questionsError:string}){
  const running=state==='running',broken=state==='failed'||state==='stalled';
  const facts=strings(x.facts),assumptions=strings(x.assumptions);
  const d=decisionDetails(decision);
@@ -157,6 +165,11 @@ function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:Event
   <Block label="Executive perspectives" aside={<span className="text-xs text-slate-500">{done} of {ROLES.length} complete</span>}>
    <ExecutiveTabs items={items} running={running}/>
   </Block>
+
+  {consoleEnabled&&<Block label="Ask the executives" aside={<span className="text-xs text-slate-500">AI answers · advisory only</span>}>
+   {questionsError?<p className="text-sm text-amber-700">{questionsError}</p>
+   :<Questions eventId={x.id} items={questions} roles={ROLES.map(r=>({role:r,label:`${ASSIGNMENTS[r].student} · ${ASSIGNMENTS[r].title}`}))}/>}
+  </Block>}
 
   <TeamDecision decision={decision}/>
  </>;

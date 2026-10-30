@@ -7,6 +7,7 @@ export function limits(env:Record<string,string|undefined>=process.env){
   perHour:num(env.MAX_UPDATES_PER_HOUR,10),
   perDay:num(env.MAX_UPDATES_PER_DAY,40),
   maxAttempts:num(env.MAX_ATTEMPTS_PER_UPDATE,3),
+  questionsPerHour:num(env.MAX_QUESTIONS_PER_HOUR,30),
  };
 }
 

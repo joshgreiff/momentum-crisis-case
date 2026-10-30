@@ -54,3 +54,10 @@ export const DecisionDetailsDisplaySchema=DecisionDetailsSchema.extend({
 export type AgentAnalysisDisplay=z.infer<typeof AgentAnalysisDisplaySchema>;
 export type DecisionDetailsDisplay=z.infer<typeof DecisionDetailsDisplaySchema>;
 export type DecisionDetails=z.infer<typeof DecisionDetailsSchema>;
+
+export const QuestionAnswerSchema=z.object({
+ answer:z.string().describe('Direct answer to the question in 2-6 short paragraphs or bullet-style sentences, from this executive\'s perspective'),
+ sources:z.array(z.object({source:z.string().describe('Exact file name, "Crisis update", "Executive analysis", or "Team decision"'),point:z.string()})),
+ unknowns:z.array(z.string()).describe('What is not known from the available information and would change the answer'),
+});
+export type QuestionAnswer=z.infer<typeof QuestionAnswerSchema>;
