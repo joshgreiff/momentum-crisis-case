@@ -25,7 +25,7 @@ async function checkEventView(){
   if(!await page.getByRole('heading',{name:s,exact:true}).count())problems.push(`missing detail section: ${s}`);
  await page.getByText(/^›?All \d+ confirmed facts/).click();
  if(!await page.getByText('Original update').count())problems.push('original update not reachable');
- if(!await page.getByRole('button',{name:/^(Approve|Change decision)$/}).count())problems.push('team decision controls missing');
+ if(!await page.getByRole('button',{name:/^(Save team decision|Edit decision)$/}).count())problems.push('team decision controls missing');
  step('event view: summary blocks present; full recommendation, facts and original update expand; team decision controls present');
 }
 const shot=async name=>{await page.screenshot({path:`${out}/${name}.png`,fullPage:true});step(`screenshot ${out}/${name}.png`)};
@@ -105,12 +105,15 @@ try{
   if(ready!==6)problems.push(`only ${ready}/6 tabs ready`);
   await checkEventView();
   await shot('05-completed');
-  await page.getByRole('button',{name:'Approve',exact:true}).click();
-  await page.getByText('AI-proposed · team approved').waitFor({timeout:15_000});
-  step('Approve recorded; proposal now shows team approved');
-  await page.getByRole('button',{name:'Change decision'}).click();
+  await page.getByLabel('Our decision').fill('E2E check: hold convoys, CMO drafts a holding statement.');
+  await page.getByRole('button',{name:'Save team decision'}).click();
+  await page.getByText('AI-proposed · team decision recorded').waitFor({timeout:15_000});
+  step('team decision text saved');
+  await page.getByRole('button',{name:'Edit decision'}).click();
+  await page.getByLabel('Our decision').fill('');
+  await page.getByRole('button',{name:'Save team decision'}).click();
   await page.getByText('AI-proposed · awaiting team review').waitFor({timeout:15_000});
-  step('Change decision returns it to awaiting review');
+  step('clearing the text removes the team decision');
   await page.reload({waitUntil:'networkidle'});
   step(`after reload still shows event: ${page.url().includes('event=')}`);
  }

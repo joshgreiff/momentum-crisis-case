@@ -37,17 +37,18 @@ export async function submitCrisisUpdate(_prev:ActionState,form:FormData):Promis
  }
 }
 
-const TeamDecisionSchema=z.object({id:z.string().uuid(),status:z.enum(['approved','rejected','pending'])});
+const TeamDecisionSchema=z.object({id:z.string().uuid(),response:z.string().trim().max(8000,'Keep the decision under 8,000 characters')});
 
-/** Records the team's human decision on a proposal. It only updates the status; nothing is sent or executed. */
-export async function recordTeamDecision(id:string,status:'approved'|'rejected'|'pending'):Promise<{error?:string}>{
+/** Saves the team's own written decision next to the AI proposal. Nothing is sent or executed. Empty text clears it. */
+export async function recordTeamDecision(id:string,response:string):Promise<{error?:string}>{
  if(!(await teamAccess()).allowed)return {error:'Team sign-in required.'};
- const parsed=TeamDecisionSchema.safeParse({id,status});
- if(!parsed.success)return {error:'Invalid decision.'};
- const r=await db().from('decisions').update({status:parsed.data.status,decided_at:parsed.data.status==='pending'?null:new Date().toISOString()}).eq('id',parsed.data.id).select('id');
+ const parsed=TeamDecisionSchema.safeParse({id,response});
+ if(!parsed.success)return {error:parsed.error.issues[0]?.message??'Invalid decision.'};
+ const text=parsed.data.response;
+ const r=await db().from('decisions').update({team_response:text||null,decided_at:text?new Date().toISOString():null}).eq('id',parsed.data.id).select('id');
  if(r.error){
   console.error(`[actions] record decision failed: ${r.error.code} ${r.error.message}`);
-  return {error:'Could not record the decision. Try again.'};
+  return {error:r.error.code==='PGRST204'?'Database needs migration 004_team_response.sql.':'Could not save the decision. Try again.'};
  }
  if(!r.data?.length)return {error:'Proposal not found.'};
  revalidatePath('/');

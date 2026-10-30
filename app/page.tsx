@@ -11,7 +11,7 @@ import {CrisisForm} from './components/crisis-form';
 import {RetryButton} from './components/retry-button';
 import {AutoRefresh} from './components/auto-refresh';
 import {ExecutiveTabs,type ExecutiveItem} from './components/executive-tabs';
-import {RecommendedResponse,TeamDecision,decisionDetails} from './components/decision-card';
+import {RecommendedResponse,TeamDecision,decisionDetails,hasTeamDecision} from './components/decision-card';
 import {Block,Bullets,Chip,More,ProcessSteps,type StepState,type Tone} from './components/ui';
 export const dynamic='force-dynamic';
 
@@ -42,7 +42,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
  const anyRunning=events.some(e=>eventState(e,now)==='running');
  const showForm=params.view==='new'||(!events.length&&!error);
  const selected=showForm?undefined:events.find(e=>e.id===params.event)??events[0];
- const pending=decisions.filter(d=>d.status==='pending').length;
+ const pending=decisions.filter(d=>!hasTeamDecision(d)).length;
  const chronological=[...events].reverse();
  const instructorCount=events.filter(e=>!e.is_demo).length;
  const updateNumber=new Map(chronological.filter(e=>!e.is_demo).map((e,i)=>[e.id,i+1]));
@@ -74,7 +74,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
      <Link href={`/?event=${e.id}`} aria-current={active?'page':undefined} className={`block border-l-2 py-2.5 pl-4 pr-2 ${active?'border-slate-900 bg-white':'border-transparent hover:bg-white/60'}`}>
       <p className="flex items-center gap-2 text-[11px] text-slate-500"><span className={`h-1.5 w-1.5 rounded-full ${stateDot[s]}`} title={stateText[s]}/>{e.is_demo?<span className="rounded border border-dashed border-slate-400 px-1 text-[10px] uppercase tracking-wide">Practice</span>:<span className="font-semibold text-slate-700">Update {updateNumber.get(e.id)}</span>} · {fmt(e.received_at)}</p>
       <p className={`mt-0.5 line-clamp-2 text-sm ${active?'font-medium text-slate-900':e.is_demo?'text-slate-500':'text-slate-700'}`}>{e.subject}</p>
-      {d?<p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{d.status==='pending'?'Proposal awaiting review':`Team ${d.status}`}</p>:s!=='done'&&<p className="mt-1 text-[11px] text-slate-500">{stateText[s]}</p>}
+      {d?<p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{hasTeamDecision(d)?'Team decision recorded':'Proposal awaiting review'}</p>:s!=='done'&&<p className="mt-1 text-[11px] text-slate-500">{stateText[s]}</p>}
      </Link></li>})}</ol>:<p className="mt-3 text-sm text-slate-500">No updates yet.</p>}
    </nav>
 
@@ -117,7 +117,7 @@ function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:Event
   extracted?'done':broken?'failed':'active',
   done===ROLES.length?'done':broken?(extracted?'failed':'pending'):extracted?'active':'pending',
   decision?'done':broken&&done===ROLES.length?'failed':running&&done===ROLES.length?'active':'pending',
-  decision?(decision.status==='pending'?'review':'done'):'pending',
+  decision?(hasTeamDecision(decision)?'done':'review'):'pending',
  ];
  const keyFacts=facts.slice(0,3),keyUnknowns=assumptions.slice(0,Math.max(1,5-keyFacts.length)).slice(0,2);
  const urgencyTone:Tone=x.urgency==='high'||x.urgency==='critical'?'red':x.urgency==='medium'?'amber':'slate';

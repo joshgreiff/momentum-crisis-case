@@ -7,7 +7,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 ## Local development
 
 1. `npm install`
-2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…`, `003_…`).
+2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…`, `003_…`, `004_…`).
 3. Copy `.env.example` to `.env.local` and fill it in. `NEXT_PUBLIC_SUPABASE_URL` must be the bare project URL (`https://<ref>.supabase.co`). Never commit `.env.local`.
 4. `npm run dev`, open http://localhost:3000. Without `TEAM_PASSCODE`/`SESSION_SECRET`, the app runs only on `localhost` in dev mode; set both to test the passcode login locally.
 
@@ -37,7 +37,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 - Keys and the passcode are used only on the server and never reach the browser bundle.
 - Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
 - Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
-- Recommendations are labeled AI-proposed. Signed-in team members can record Approve/Reject (and change it); that only stores the team's decision and its time. Nothing is sent or executed, and draft communications are never sent.
+- Recommendations are labeled AI-proposed. Under **Team decision**, the team writes what it actually decided (optionally starting from the AI text). It is stored separately from the AI proposal, can be edited, and is given to the AI as context for later updates. Nothing is sent or executed, and draft communications are never sent.
 
 ## How analysis works
 
@@ -57,7 +57,7 @@ Verify a domain in Resend, enable inbound receiving, set the `email.received` we
 
 ## Limitations
 
-- One shared passcode; no individual accounts, so the app records that the team decided and when, but not who. The login throttle is per server instance (best effort).
+- One shared passcode; no individual accounts, so the app records the team's decision and when, but not who wrote it. The login throttle is per server instance (best effort).
 - Attachments are not downloaded. Images inside documents are not read; the convoy diagram is a hand transcription.
 - The whole `knowledge/` folder (~15k tokens) is sent with every agent call.
 - Check course AI-use rules before processing private team messages.

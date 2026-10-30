@@ -36,7 +36,7 @@ export function memoryStore(){
    if(existing)existing.analysis=a;else analyses.push({id:`a${analyses.length}`,event_id:eventId,role,analysis:a,created_at:new Date().toISOString()});
   },
   async hasDecision(eventId){return decisions.some(d=>d.event_id===eventId)},
-  async saveDecision(eventId,d){const {title,proposal,rationale,...details}=d;decisions.push({id:`d${decisions.length}`,event_id:eventId,title,proposal,rationale,details,status:'pending',decided_at:null,created_at:new Date().toISOString()})},
+  async saveDecision(eventId,d){const {title,proposal,rationale,...details}=d;decisions.push({id:`d${decisions.length}`,event_id:eventId,title,proposal,rationale,details,status:'pending',decided_at:null,team_response:null,created_at:new Date().toISOString()})},
   async markAnalyzed(id){Object.assign(events.get(id)!,{status:'analyzed',error:null})},
   async markFailed(id,message){Object.assign(events.get(id)!,{status:'failed',error:message})},
  };

@@ -83,12 +83,14 @@ describe('crisis pipeline',()=>{
   await claimAndRun(a.id,deps);
   const demo=await ingestUpdate({...update,subject:'Practice: fake recall',body:'This is a practice scenario about a product recall.',providerId:'demo',isDemo:true},mem.store);
   await claimAndRun(demo.id,deps);
+  mem.decisions.find(d=>d.event_id===a.id)!.team_response='Keep convoys paused; CMO drafts a holding statement.';
   const b=await ingestUpdate({...update,subject:'Update 3: media inquiries',body:'Reporters are calling about the halted trucks on I-70.',providerId:'b'},mem.store);
   await claimAndRun(b.id,deps);
 
   const later=ai.calls.filter(c=>c.input.includes('Update 3')&&c.name==='executive_analysis')[0];
   expect(later.input).toContain('Update 2: trucks halted');
-  expect(later.input).toContain('Proposed decision (status: pending): Pause autonomous convoys');
+  expect(later.input).toContain('AI-proposed response: Pause autonomous convoys');
+  expect(later.input).toContain('Team decision (what the team actually chose): Keep convoys paused; CMO drafts a holding statement.');
   expect(later.input).not.toContain('Practice: fake recall');
  });
 

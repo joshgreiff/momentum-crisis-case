@@ -1,13 +1,9 @@
 import {DecisionDetailsDisplaySchema,type DecisionDetailsDisplay} from '../../lib/schemas';
 import type {DecisionRow} from '../../lib/db';
 import {Block,Bullets,Chip,More} from './ui';
-import {DecisionButtons} from './decision-buttons';
+import {TeamDecisionEditor} from './team-decision-editor';
 
-const PROPOSAL_PILL={
- pending:['AI-proposed · awaiting team review','border-amber-300 bg-amber-50 text-amber-800'],
- approved:['AI-proposed · team approved','border-emerald-300 bg-emerald-50 text-emerald-800'],
- rejected:['AI-proposed · team rejected','border-red-300 bg-red-50 text-red-800'],
-} as const;
+export const hasTeamDecision=(d:DecisionRow|undefined)=>!!d?.team_response?.trim();
 
 export function decisionDetails(decision:DecisionRow|undefined):DecisionDetailsDisplay|null{
  const p=DecisionDetailsDisplaySchema.safeParse(decision?.details);
@@ -19,7 +15,9 @@ export function RecommendedResponse({decision,pendingNote}:{decision:DecisionRow
  const d=decisionDetails(decision);
  const top=d?.immediate_actions.slice(0,3)??[];
  return <Block id="ceo-recommendation" label="Recommended response · CEO consolidation"
-  aside={<span className={`whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium ${PROPOSAL_PILL[decision.status][1]}`}>{PROPOSAL_PILL[decision.status][0]}</span>}
+  aside={hasTeamDecision(decision)
+   ?<span className="whitespace-nowrap rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">AI-proposed · team decision recorded</span>
+   :<span className="whitespace-nowrap rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">AI-proposed · awaiting team review</span>}
   title={<h2 className="text-xl font-semibold leading-snug text-slate-900">{decision.title}</h2>}>
   <p className="max-w-3xl text-[15px] leading-relaxed text-slate-700">{d?.recommendation_summary||decision.proposal}</p>
   {!!top.length&&<div className="mt-5">
@@ -55,14 +53,12 @@ export function RecommendedResponse({decision,pendingNote}:{decision:DecisionRow
 }
 
 export function TeamDecision({decision}:{decision:DecisionRow|undefined}){
- const decided=!!decision&&decision.status!=='pending';
- return <Block label="Team decision">
-  <div className="flex flex-wrap items-center justify-between gap-4">
-   <div>
-    <p className="flex items-center gap-2 font-medium text-slate-900">{!decision?'Nothing to decide yet':decided?<>Team decision <Chip color={decision.status==='approved'?'green':'red'}>{decision.status}</Chip></>:'No team decision recorded'}</p>
-    <p className="mt-0.5 text-sm text-slate-500">{!decision?'The team reviews once the CEO recommendation is ready.':decided?`${decision.decided_at?`Recorded ${new Date(decision.decided_at).toLocaleString()}. `:''}Recording a decision does not send or execute anything.`:'Discuss as a team, then record your decision. Nothing is sent or executed.'}</p>
-   </div>
-   {decision&&<DecisionButtons id={decision.id} decided={decided}/>}
-  </div>
+ const decided=hasTeamDecision(decision);
+ const d=decisionDetails(decision);
+ return <Block label="Team decision" aside={decided&&decision?.decided_at?<span className="text-xs text-slate-500">Recorded {new Date(decision.decided_at).toLocaleString()}</span>:undefined}>
+  {!decision?<p className="text-sm text-slate-500">The team records its decision once the CEO recommendation is ready.</p>:<>
+   {!decided&&<p className="mb-3 text-sm text-slate-500">Discuss as a team, then write what you decided. It is saved here and given to the AI as context for later updates. Nothing is sent or executed.</p>}
+   <TeamDecisionEditor key={decision.id} id={decision.id} saved={decision.team_response?.trim()??''} suggestion={d?.recommendation_summary||decision.proposal}/>
+  </>}
  </Block>;
 }
