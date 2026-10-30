@@ -13,6 +13,8 @@ describe('authConfig',()=>{
  it('falls back to localhost-only in development and fails closed in production',()=>{
   expect(authConfig({NODE_ENV:'development'}).mode).toBe('local-only');
   expect(authConfig({NODE_ENV:'production'}).mode).toBe('misconfigured');
+  expect(authConfig({SESSION_SECRET:'x'.repeat(32),NODE_ENV:'development'}).mode).toBe('local-only');
+  expect(authConfig({SESSION_SECRET:'x'.repeat(32),NODE_ENV:'production'}).mode).toBe('misconfigured');
  });
 });
 

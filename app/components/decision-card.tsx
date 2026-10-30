@@ -1,6 +1,13 @@
 import {DecisionDetailsDisplaySchema,type DecisionDetailsDisplay} from '../../lib/schemas';
 import type {DecisionRow} from '../../lib/db';
 import {Block,Bullets,Chip,More} from './ui';
+import {DecisionButtons} from './decision-buttons';
+
+const PROPOSAL_PILL={
+ pending:['AI-proposed · awaiting team review','border-amber-300 bg-amber-50 text-amber-800'],
+ approved:['AI-proposed · team approved','border-emerald-300 bg-emerald-50 text-emerald-800'],
+ rejected:['AI-proposed · team rejected','border-red-300 bg-red-50 text-red-800'],
+} as const;
 
 export function decisionDetails(decision:DecisionRow|undefined):DecisionDetailsDisplay|null{
  const p=DecisionDetailsDisplaySchema.safeParse(decision?.details);
@@ -12,7 +19,7 @@ export function RecommendedResponse({decision,pendingNote}:{decision:DecisionRow
  const d=decisionDetails(decision);
  const top=d?.immediate_actions.slice(0,3)??[];
  return <Block id="ceo-recommendation" label="Recommended response · CEO consolidation"
-  aside={<span className="whitespace-nowrap rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">AI-proposed · awaiting team review</span>}
+  aside={<span className={`whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-medium ${PROPOSAL_PILL[decision.status][1]}`}>{PROPOSAL_PILL[decision.status][0]}</span>}
   title={<h2 className="text-xl font-semibold leading-snug text-slate-900">{decision.title}</h2>}>
   <p className="max-w-3xl text-[15px] leading-relaxed text-slate-700">{d?.recommendation_summary||decision.proposal}</p>
   {!!top.length&&<div className="mt-5">
@@ -52,14 +59,10 @@ export function TeamDecision({decision}:{decision:DecisionRow|undefined}){
  return <Block label="Team decision">
   <div className="flex flex-wrap items-center justify-between gap-4">
    <div>
-    <p className="font-medium text-slate-900">{!decision?'Nothing to decide yet':decided?`Team decision: ${decision.status}`:'No team decision recorded'}</p>
-    <p className="mt-0.5 text-sm text-slate-500">{!decision?'The team reviews once the CEO recommendation is ready.':decided?(decision.decided_at?`Recorded ${new Date(decision.decided_at).toLocaleString()}`:''):'Discuss the recommendation as a team. Recording decisions here is enabled once team sign-in exists.'}</p>
+    <p className="flex items-center gap-2 font-medium text-slate-900">{!decision?'Nothing to decide yet':decided?<>Team decision <Chip color={decision.status==='approved'?'green':'red'}>{decision.status}</Chip></>:'No team decision recorded'}</p>
+    <p className="mt-0.5 text-sm text-slate-500">{!decision?'The team reviews once the CEO recommendation is ready.':decided?`${decision.decided_at?`Recorded ${new Date(decision.decided_at).toLocaleString()}. `:''}Recording a decision does not send or execute anything.`:'Discuss as a team, then record your decision. Nothing is sent or executed.'}</p>
    </div>
-   {decision&&!decided&&<div className="flex gap-2" title="Available after team sign-in is added">
-    <button type="button" disabled className="cursor-not-allowed rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-400">Approve</button>
-    <button type="button" disabled className="cursor-not-allowed rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-400">Reject</button>
-   </div>}
-   {decided&&<Chip color={decision.status==='approved'?'green':'red'}>{decision.status}</Chip>}
+   {decision&&<DecisionButtons id={decision.id} decided={decided}/>}
   </div>
  </Block>;
 }

@@ -9,7 +9,7 @@ export type AuthConfig={mode:'passcode';passcode:string;secret:string}|{mode:'lo
 /** Passcode mode when TEAM_PASSCODE + SESSION_SECRET are set; unauthenticated localhost-only in `next dev`; otherwise fail closed. */
 export function authConfig(env:Record<string,string|undefined>=process.env):AuthConfig{
  const passcode=env.TEAM_PASSCODE?.trim(),secret=env.SESSION_SECRET?.trim();
- if(passcode||secret){
+ if(passcode||(secret&&env.NODE_ENV!=='development')){
   if(!passcode||passcode.length<8)return {mode:'misconfigured',reason:'TEAM_PASSCODE must be set and at least 8 characters.'};
   if(!secret||secret.length<32)return {mode:'misconfigured',reason:'SESSION_SECRET must be set and at least 32 characters.'};
   return {mode:'passcode',passcode,secret};

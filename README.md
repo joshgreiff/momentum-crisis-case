@@ -2,7 +2,7 @@
 
 Petitto / Team #6 / 2:15 — BUSMHR 2292 crisis simulation (Oct 30 – Nov 6, 2026).
 
-A Next.js, Supabase and OpenAI tool that turns each crisis update into six executive analyses and one AI-proposed CEO recommendation for the team to review. Nothing is sent or decided automatically.
+A Next.js, Supabase and OpenAI tool that turns each crisis update into six executive analyses and one AI-proposed CEO recommendation for the team to review and record a decision on. Nothing is sent or decided automatically.
 
 ## Local development
 
@@ -37,7 +37,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 - Keys and the passcode are used only on the server and never reach the browser bundle.
 - Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
 - Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
-- Recommendations are labeled AI-proposed. Approve/Reject is disabled; the decisions API refuses writes. Draft communications are never sent.
+- Recommendations are labeled AI-proposed. Signed-in team members can record Approve/Reject (and change it); that only stores the team's decision and its time. Nothing is sent or executed, and draft communications are never sent.
 
 ## How analysis works
 
@@ -57,7 +57,7 @@ Verify a domain in Resend, enable inbound receiving, set the `email.received` we
 
 ## Limitations
 
-- One shared passcode; no individual accounts or audit trail of who viewed or submitted. The login throttle is per server instance (best effort).
+- One shared passcode; no individual accounts, so the app records that the team decided and when, but not who. The login throttle is per server instance (best effort).
 - Attachments are not downloaded. Images inside documents are not read; the convoy diagram is a hand transcription.
 - The whole `knowledge/` folder (~15k tokens) is sent with every agent call.
 - Check course AI-use rules before processing private team messages.
