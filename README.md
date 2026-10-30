@@ -41,3 +41,4 @@ Manual and email updates share one pipeline (`lib/agents.ts`): the update is sto
 4. Add authenticated approval/rejection and a decision audit trail.
 5. Add a board briefing export and Slack/email notifications.
 # momentum-crisis-case
+# momentum-crisis-case
