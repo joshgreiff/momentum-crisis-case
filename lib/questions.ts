@@ -6,8 +6,11 @@ import {sharedInstructions} from './agents';
 import {QuestionAnswerSchema,ROLES,type QuestionAnswer} from './schemas';
 import {ASSIGNMENTS} from './team';
 
-export type QuestionRow={id:string;event_id:string|null;role:string;asker:string|null;question:string;answer:unknown;created_at:string};
+export type QuestionRow={id:string;event_id:string|null;role:string;asker:string|null;client_id:string|null;question:string;answer:unknown;created_at:string};
 export const ADVISOR_ROLE='advisor';
+/** Anonymous per-browser ID; questions are only shown to (and used as follow-up context for) the browser that asked them. */
+export const QUESTION_CLIENT_COOKIE='mcc_qid';
+export const isClientId=(v:string|undefined):v is string=>!!v&&/^[0-9a-f-]{36}$/.test(v);
 
 export const ADVISOR_INSTRUCTIONS=`You are the team's case advisor. A member of the student executive team asked the question in <team_question>. They may ask about the case itself, what an instructor update said, what the team has already sent, what to do next, or for feedback on a draft.
 - Answer directly in plain, conversational language, short enough to read on a phone. Lead with the answer; skip preamble.
@@ -39,7 +42,7 @@ function formatRoster(){
 
 function formatRecent(recent:QuestionRow[]){
  const items=recent.flatMap(q=>{const a=QuestionAnswerSchema.safeParse(q.answer);return a.success?[`Q (${q.asker||'team member'}): ${clip(q.question,600)}\nA: ${clip(a.data.answer,1200)}`]:[]});
- return items.length?`<recent_questions>\nEarlier questions from the team, oldest first:\n${items.reverse().join('\n\n')}\n</recent_questions>`:'';
+ return items.length?`<recent_questions>\nThis team member's earlier questions, oldest first:\n${items.reverse().join('\n\n')}\n</recent_questions>`:'';
 }
 
 export async function answerCaseQuestion(

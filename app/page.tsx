@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import {db,type EventRow,type DecisionRow,type AgentAnalysisRow} from '../lib/db';
 import {AgentAnalysisDisplaySchema,QuestionAnswerSchema,ROLES} from '../lib/schemas';
-import type {QuestionRow} from '../lib/questions';
+import {cookies} from 'next/headers';
+import {QUESTION_CLIENT_COOKIE,isClientId,type QuestionRow} from '../lib/questions';
 import {Questions,type QuestionItem} from './components/questions';
 import {EXECUTIVES} from '../lib/roles';
 import {teamAccess} from './access';
@@ -46,9 +47,10 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
  const showForm=!showAsk&&(params.view==='new'||(!events.length&&!error));
  const selected=showForm||showAsk?undefined:events.find(e=>e.id===params.event)??events[0];
  let questions:QuestionItem[]=[],questionsError='';
- if(showAsk&&!error){
-  const q=await db().from('questions').select('*').order('created_at',{ascending:false}).limit(50).returns<QuestionRow[]>();
-  if(q.error){logQueryErrors([['questions',q]]);questionsError='Questions are unavailable. Run supabase/migrations/005_questions.sql and 006_case_questions.sql.'}
+ const clientId=(await cookies()).get(QUESTION_CLIENT_COOKIE)?.value;
+ if(showAsk&&!error&&isClientId(clientId)){
+  const q=await db().from('questions').select('*').eq('client_id',clientId).order('created_at',{ascending:false}).limit(50).returns<QuestionRow[]>();
+  if(q.error){logQueryErrors([['questions',q]]);questionsError='Questions are unavailable. Run supabase/migrations 005 through 007.'}
   else questions=(q.data??[]).map(r=>{const role=ROLES.find(x=>x===r.role);const a=QuestionAnswerSchema.safeParse(r.answer);return {id:r.id,label:r.asker||(role?`Question to the ${ASSIGNMENTS[role].title}`:'Team member'),question:r.question,answer:a.success?a.data:null,created_at:r.created_at}});
  }
  const pending=decisions.filter(d=>!hasTeamDecision(d)).length;
@@ -118,7 +120,7 @@ function AskView({items,error}:{items:QuestionItem[];error:string}){
    <h1 className="text-2xl font-semibold text-slate-900">Ask about the case</h1>
    <p className="mt-1 text-sm text-slate-500">Answers draw on the case reading, lectures, course tips, every instructor update, and everything the team has recorded as sent. Advisory only; it never sends anything.</p>
   </div>
-  <Block label="Question" aside={<span className="text-xs text-slate-500">Saved for the whole team</span>}>
+  <Block label="Question" aside={<span className="text-xs text-slate-500">Private · only visible in this browser</span>}>
    {error?<p className="text-sm text-amber-700">{error}</p>:<Questions items={items} students={ROLES.map(r=>ASSIGNMENTS[r].student)}/>}
   </Block>
  </>;

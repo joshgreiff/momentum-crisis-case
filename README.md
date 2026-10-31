@@ -7,7 +7,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 ## Local development
 
 1. `npm install`
-2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…` through `006_…`).
+2. In the Supabase SQL Editor, run `supabase/schema.sql`, then the files in `supabase/migrations/` in order (`002_…` through `007_…`).
 3. Copy `.env.example` to `.env.local` and fill it in. `NEXT_PUBLIC_SUPABASE_URL` must be the bare project URL (`https://<ref>.supabase.co`). Never commit `.env.local`.
 4. `npm run dev`, open http://localhost:3000. Without `TEAM_PASSCODE`/`SESSION_SECRET`, the app runs only on `localhost` in dev mode; set both to test the passcode login locally.
 
@@ -38,7 +38,7 @@ A Next.js, Supabase and OpenAI tool that turns each crisis update into six execu
 - Keys and the passcode are used only on the server and never reach the browser bundle.
 - Limits: at most `MAX_UPDATES_PER_HOUR`/`MAX_UPDATES_PER_DAY` new updates, and `MAX_ATTEMPTS_PER_UPDATE` processing attempts per update. Duplicate updates (same subject and text) are not re-analyzed.
 - Updates are labeled **Instructor update** or **Practice**. Practice updates are excluded from the history the AI uses for later updates and are not numbered in the timeline.
-- **Ask about the case:** any team member can ask a general question (about the case, what an update said, what the team already sent, what to do next, or feedback on a pasted draft). The AI case advisor answers using `knowledge/`, every instructor update, the team's recorded sent messages, the team roster and the last few questions. Answers are saved for everyone and are advisory only. Requires migration `006_case_questions.sql`.
+- **Ask about the case:** any team member can ask a general question (about the case, what an update said, what the team already sent, what to do next, or feedback on a pasted draft). The AI case advisor answers using `knowledge/`, every instructor update, the team's recorded sent messages, the team roster and the last few questions. Questions are private: an anonymous per-browser cookie means each person sees only their own questions, and only their own earlier questions are used as follow-up context. Answers are advisory only. Requires migrations `006_case_questions.sql` and `007_private_questions.sql`.
 - Recommendations are labeled AI-proposed. Under **Team decision**, the team pastes the email(s) it actually sent or the decision it made. It is stored separately from the AI proposal, can be edited, and is given to the AI as already-sent context for later updates. The app itself never sends anything. Nothing is sent or executed, and draft communications are never sent.
 
 ## How analysis works
