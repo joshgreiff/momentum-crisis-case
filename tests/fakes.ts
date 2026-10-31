@@ -62,7 +62,7 @@ export function fakeLlm(opts:{failRoles?:Set<string>;delayMs?:number}={}){
     await new Promise(r=>setTimeout(r,opts.delayMs??5));
     const role=/\(role: ([^)]+)\)/.exec(req.instructions.at(-1)??'')?.[1];
     if(role&&opts.failRoles?.has(role))throw new Error(`simulated ${role} failure with key sk-proj-abcdefghijklmnop`);
-    const out=req.name==='crisis_extraction'?sampleExtraction:req.name==='executive_analysis'?sampleAnalysis(`${role} view`):req.name==='executive_question'?sampleAnswer:sampleDecision;
+    const out=req.name==='crisis_extraction'?sampleExtraction:req.name==='executive_analysis'?sampleAnalysis(`${role} view`):req.name==='case_question'?sampleAnswer:sampleDecision;
     return req.schema.parse(out);
    }finally{inFlight--}
   },

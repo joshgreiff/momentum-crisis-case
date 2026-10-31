@@ -42,13 +42,14 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
  const consoleEnabled=access.allowed;
  const now=Date.now();
  const anyRunning=events.some(e=>eventState(e,now)==='running');
- const showForm=params.view==='new'||(!events.length&&!error);
- const selected=showForm?undefined:events.find(e=>e.id===params.event)??events[0];
+ const showAsk=params.view==='ask'&&consoleEnabled;
+ const showForm=!showAsk&&(params.view==='new'||(!events.length&&!error));
+ const selected=showForm||showAsk?undefined:events.find(e=>e.id===params.event)??events[0];
  let questions:QuestionItem[]=[],questionsError='';
- if(selected&&!error){
-  const q=await db().from('questions').select('*').eq('event_id',selected.id).order('created_at',{ascending:false}).limit(50).returns<QuestionRow[]>();
-  if(q.error){logQueryErrors([['questions',q]]);questionsError='Questions are unavailable. If this is new, run supabase/migrations/005_questions.sql.'}
-  else questions=(q.data??[]).map(r=>{const role=ROLES.find(x=>x===r.role);const a=QuestionAnswerSchema.safeParse(r.answer);return {id:r.id,role:r.role,label:role?`${ASSIGNMENTS[role].student} · ${ASSIGNMENTS[role].title}`:r.role,question:r.question,answer:a.success?a.data:null,created_at:r.created_at}});
+ if(showAsk&&!error){
+  const q=await db().from('questions').select('*').order('created_at',{ascending:false}).limit(50).returns<QuestionRow[]>();
+  if(q.error){logQueryErrors([['questions',q]]);questionsError='Questions are unavailable. Run supabase/migrations/005_questions.sql and 006_case_questions.sql.'}
+  else questions=(q.data??[]).map(r=>{const role=ROLES.find(x=>x===r.role);const a=QuestionAnswerSchema.safeParse(r.answer);return {id:r.id,label:r.asker||(role?`Question to the ${ASSIGNMENTS[role].title}`:'Team member'),question:r.question,answer:a.success?a.data:null,created_at:r.created_at}});
  }
  const pending=decisions.filter(d=>!hasTeamDecision(d)).length;
  const chronological=[...events].reverse();
@@ -69,6 +70,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
     </Link>
     <div className="flex items-center gap-5 text-xs text-slate-300">
      <span aria-label="Dashboard counts"><b className="text-white">{instructorCount}</b> instructor updates · <b className="text-white">{events.length-instructorCount}</b> practice · <b className="text-white">{analyses.length}</b> analyses · <b className="text-white">{pending}</b> awaiting review · <b className="text-white">{decisions.length-pending}</b> team decisions</span>
+     {consoleEnabled&&<Link href="/?view=ask" aria-current={showAsk?'page':undefined} className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${showAsk?'border-white bg-white/10 text-white':'border-slate-600 text-slate-100 hover:border-slate-300'}`}>Ask about the case</Link>}
      {consoleEnabled&&<Link href="/?view=new" className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 hover:bg-slate-200">+ New crisis update</Link>}
      {access.mode==='passcode'&&<form action={signOut}><button type="submit" className="text-xs text-slate-400 hover:text-white">Sign out</button></form>}
     </div>
@@ -88,8 +90,9 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
 
    <main className="min-w-0 space-y-5">
     {error&&<p role="alert" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</p>}
-    {showForm?<NewUpdate consoleEnabled={consoleEnabled}/>
-    :selected?<EventView event={selected} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled} questions={questions} questionsError={questionsError}/>
+    {showAsk?<AskView items={questions} error={questionsError}/>
+    :showForm?<NewUpdate consoleEnabled={consoleEnabled}/>
+    :selected?<EventView event={selected} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled}/>
     :<p className="text-sm text-slate-500">No crisis update selected.</p>}
    </main>
   </div>
@@ -109,7 +112,19 @@ function NewUpdate({consoleEnabled}:{consoleEnabled:boolean}){
  </>;
 }
 
-function EventView({event:x,analyses,decision,state,consoleEnabled,questions,questionsError}:{event:EventRow;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean;questions:QuestionItem[];questionsError:string}){
+function AskView({items,error}:{items:QuestionItem[];error:string}){
+ return <>
+  <div>
+   <h1 className="text-2xl font-semibold text-slate-900">Ask about the case</h1>
+   <p className="mt-1 text-sm text-slate-500">Answers draw on the case reading, lectures, course tips, every instructor update, and everything the team has recorded as sent. Advisory only; it never sends anything.</p>
+  </div>
+  <Block label="Question" aside={<span className="text-xs text-slate-500">Saved for the whole team</span>}>
+   {error?<p className="text-sm text-amber-700">{error}</p>:<Questions items={items} students={ROLES.map(r=>ASSIGNMENTS[r].student)}/>}
+  </Block>
+ </>;
+}
+
+function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:EventRow;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean}){
  const running=state==='running',broken=state==='failed'||state==='stalled';
  const facts=strings(x.facts),assumptions=strings(x.assumptions);
  const d=decisionDetails(decision);
@@ -165,11 +180,6 @@ function EventView({event:x,analyses,decision,state,consoleEnabled,questions,que
   <Block label="Executive perspectives" aside={<span className="text-xs text-slate-500">{done} of {ROLES.length} complete</span>}>
    <ExecutiveTabs items={items} running={running}/>
   </Block>
-
-  {consoleEnabled&&<Block label="Ask the executives" aside={<span className="text-xs text-slate-500">AI answers · advisory only</span>}>
-   {questionsError?<p className="text-sm text-amber-700">{questionsError}</p>
-   :<Questions eventId={x.id} items={questions} roles={ROLES.map(r=>({role:r,label:`${ASSIGNMENTS[r].student} · ${ASSIGNMENTS[r].title}`}))}/>}
-  </Block>}
 
   <TeamDecision decision={decision}/>
  </>;
