@@ -72,6 +72,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
     </Link>
     <div className="flex items-center gap-5 text-xs text-slate-300">
      <span aria-label="Dashboard counts"><b className="text-white">{instructorCount}</b> instructor updates · <b className="text-white">{events.length-instructorCount}</b> practice · <b className="text-white">{analyses.length}</b> analyses · <b className="text-white">{pending}</b> awaiting review · <b className="text-white">{decisions.length-pending}</b> team decisions</span>
+     <Link href="/presentation" className="rounded-md border border-slate-600 px-3 py-1.5 text-sm font-semibold text-slate-100 hover:border-slate-300">Presentation</Link>
      {consoleEnabled&&<Link href="/?view=ask" aria-current={showAsk?'page':undefined} className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${showAsk?'border-white bg-white/10 text-white':'border-slate-600 text-slate-100 hover:border-slate-300'}`}>Ask about the case</Link>}
      {consoleEnabled&&<Link href="/?view=new" className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 hover:bg-slate-200">+ New crisis update</Link>}
      {access.mode==='passcode'&&<form action={signOut}><button type="submit" className="text-xs text-slate-400 hover:text-white">Sign out</button></form>}
