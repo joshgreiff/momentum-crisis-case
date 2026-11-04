@@ -17,12 +17,18 @@
 - Told Margie about Ashley's death that night and about IT's findings the next morning
 - Sunday public statement: our software caused it, we knew about the glitch for a month, and continuing to operate was the wrong decision
 
-**Close:** fleet stays grounded until the fix is independently tested; drivers are part of the safety review; we'll rebuild trust through actions.
+- Management changes (to Margie, Wed 2:39 PM): independent Chief Safety Officer reporting to the Board with authority to ground the fleet; Globex President keeps the technical fix but loses safety sign-off and recuses from the Board's review; no terminations until the investigation is done; driver layoffs paused; offered my resignation, the Board's call
+
+**Close:** fleet stays grounded until the fix is independently tested and the Chief Safety Officer signs off; drivers are part of the safety review; Friday updates; I've offered my resignation and will see this through if the Board asks me to stay.
 
 **Likely questions:**
 - *Why apologize before knowing the cause?* We owned the harm without guessing the cause. Speed, acknowledgment and amends are what rebuild trust, and the cause turned out to be ours.
 - *Why disclose the month of prior knowledge? That's legal exposure.* It would have come out anyway (the press was already reporting "ignored signs"). Coming from us, it's accountability; coming from a reporter, it's a cover-up.
 - *You're new. Why should we trust your judgment?* Every major call was made within 24 hours and stayed consistent with the same principles.
+- *You promised the public an update within 48 hours. Did you deliver?* Yes. Mikey's statement went to FOX, CNN, the Dispatch, the Post-Gazette and the Express-News and was posted on X and Facebook on Tuesday at 12:31 PM, within the window.
+- *Why should we keep you?* I've owned every decision this week, and changing leaders in the middle of an investigation adds risk. But it's your call, and I'll support either decision.
+- *Why not fire the people who ignored the glitch?* The failure was structural: the same group built the technology and judged its safety. We fixed the structure now; individual accountability follows the investigation's findings, not the headlines.
+- *Did you use AI to make these decisions?* We built a tool that analyzed each update from every executive's view. It suggested; we decided, and we went against it several times (the walkout, Alexa's family, and management changes, where it said to study it rather than answer).
 
 ---
 
@@ -47,11 +53,13 @@
 - IT and safety had been investigating for about a month and judged it not critical. That was the wrong call
 - Replied to IT: preserve everything, support the team, keep investigating
 - Next steps: root cause confirmed, fix, then independent testing before anything restarts
+- Management change: I keep leading the technical fix but no longer hold safety sign-off (the new independent Chief Safety Officer does), and I've recused myself from the Board's review. Building the technology and judging its safety shouldn't sit with the same person
 
 **Context:** earlier warning signs in the case (March 2021): L4 trucks with nonstop horns, music playing, random blinkers, sudden light braking. Drivers laughed them off, and quality checks came back "fine."
 
 **Likely questions:**
 - *Who made the call to keep running?* IT and the safety team together. We're fixing the process (escalation, independent testing), not blaming individuals.
+- *Do you support losing safety sign-off?* Yes. I built this technology; someone independent should decide when it's safe. That protects the company and the program.
 - *Was it terrorism?* No evidence of outside intrusion so far; 95% confidence from IT.
 - *Was the $15B Globex acquisition a mistake?* The technology needs stronger safety processes, not abandonment. That's why independent testing and driver input come first.
 
@@ -81,7 +89,7 @@
 **Likely questions:**
 - *Why not contact Alexa's family directly?* A letter from the company they blame can feel like PR. We offered support through the district and let them choose.
 - *Isn't pausing layoffs just delaying the inevitable?* It's a pause, not a promise. We won't make job decisions mid-crisis without the facts, and right now drivers are running every delivery.
-- *Did the walkout happen?* We answered with listening and specific safety guarantees within hours. (Update on the latest status before Friday.)
+- *Did the walkout happen?* No. HR reported Tuesday at 3 PM that it was avoided after management's response (listening session and specific safety commitments). Trust still needs rebuilding.
 
 ---
 
@@ -94,7 +102,10 @@
 - Globex acquisition $15B (30% premium); almost $700M invested in the autonomous fleet
 - Driver total cost about $83K a year; engineer $206K replaces four drivers, saving about $126K a year (Exhibit 8)
 
+**The Board asked to hear from you on how we survive financially. Lead with this.**
+
 **Key points:**
+- Sent Margie the legal and financial risk memo (Wed 2:10 PM): lawsuits, punitive damages risk from the month of prior knowledge, regulatory fines, shareholder suits; notify insurers, reserves, early fair settlements, pause nonessential spending, no new autonomous spending
 - The crisis is survivable, but the cushion is thin: $2.1B cash against $19B of debt and unknown litigation exposure (two deaths, children critically injured, a multi-car pileup)
 - The driver replacement savings depend on technology that's grounded and a law now under review, so the layoff pause is financially reasonable
 - Victim support (medical and funeral) is a small cost compared with the reputation and legal damage of not doing it

@@ -6,6 +6,7 @@ import {TEAM} from '../../lib/team';
 export const dynamic='force-dynamic';
 
 const DOCS={
+ outline:{file:'outline.md',label:'Outline'},
  cheat:{file:'cheat-sheets.md',label:'Cheat sheets'},
  log:{file:'decision-log.md',label:'Decision log'},
 } as const;
@@ -29,7 +30,7 @@ const components:Components={
 
 export default async function Presentation({searchParams}:{searchParams:Promise<{doc?:string}>}){
  const {doc}=await searchParams;
- const key:DocKey=doc==='log'?'log':'cheat';
+ const key:DocKey=doc==='log'||doc==='outline'?doc:'cheat';
  const md=await readFile(path.join(process.cwd(),'presentation',DOCS[key].file),'utf8').catch(()=>null);
  const sections=md?[...md.matchAll(/^## (.+)$/gm)].map(m=>m[1].trim()):[];
 

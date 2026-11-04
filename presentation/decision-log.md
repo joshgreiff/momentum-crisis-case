@@ -83,8 +83,26 @@ For the Board presentation on Friday, Nov 6. Each entry is what we learned, what
 - Emily (CHRO) to the Pittsburgh school district (Mon 11/2, 2:38 PM): asked them to pass our condolences to Alexa's family; funeral and medical costs covered; Emily as their one point of contact; no pressure to respond; grief counseling offered for students and staff.
 - *Debate:* a CEO letter directly to the family, or something gentler? We decided a letter from the CEO of the company they blame could feel like PR, so we reached out quietly through the district and let the family decide whether to engage.
 - *In public:* don't name Alexa or reference the video, since that could look like using her death.
-- **Listening session follow-up (Emily; scheduled Mon 11/2, 3:30 PM):** opens with Alexa. Commitments: a direct safety reporting line to leadership with a response within 48 hours; a driver representative on the autonomous program safety review; company-wide updates every Friday; no layoff decisions about drivers until the investigation and safety review are complete.
+- **Listening session follow-up (Emily, Mon 11/2, 3:30 PM):** opens with Alexa. Commitments: a direct safety reporting line to leadership with a response within 48 hours; a driver representative on the autonomous program safety review; company-wide updates every Friday; no layoff decisions about drivers until the investigation and safety review are complete.
 - *Why the layoff pause:* we won't make job decisions mid-crisis without all the facts.
+
+### Tue 11/3: Walkout warning, media tipped off (Update 12)
+
+**Update 12: Bill Buckley, a driver of 29 years, emails Emily and General Counsel: a large group plans to walk out at 3 PM today, and the media has reportedly been tipped off.**
+- *Debate:* go out and listen to the walkout, or take a firmer line? We settled on firm but respectful: operations continue, existing commitments stand, no new concessions under pressure, no penalties or threats (walking out together over safety is legally protected even without a union).
+- *Worst case planned for:* if most drivers walk, prioritize medical, time-sensitive and major-contract deliveries, use outside carriers and licensed supervisors, warn big customers early, and do not restart the autonomous trucks to fill gaps.
+- **Media statement (Mikey, Tue 11/3, 12:31 PM)** to reporters at FOX News, CNN, the Columbus Dispatch, the Pittsburgh Post-Gazette and the San Antonio Express-News: respect for employees' right to raise concerns; no consequences for raising safety concerns; listening sessions with leadership this week; deliveries continue with human-driven trucks; the investigation continues.
+- **Same statement posted on X and Facebook (Mikey, 12:34 PM)** from the official Momentum accounts.
+- *Why go to the outlets directly:* another team was criticized for not putting its apology in newspapers and on social media, so we went straight to the outlets covering us and to our own channels.
+- *Where we overrode the AI:* the app recommended another CEO email to all staff and new listening sessions. We had done both on Sunday, so repeating them would have looked like scrambling.
+
+**Update 13: HR (Carol Stevenson) to Emily, Tue 3 PM: the walkout has been avoided for now; mood improved after management's response, but trust still needs rebuilding.**
+
+**Update 14: Board chair Margie Simpson, Tue 3:30 PM, asks for an assessment of legal risks and whether changes to the management team would help.**
+- **Griffin (CFO), legal and financial risk memo to Margie (Wed 11/4, 2:10 PM):** wrongful death and injury suits, punitive damages risk from the month of prior knowledge, regulatory fines, shareholder suits; still profitable but cash is tight; notify insurers, reserve for claims, early fair settlements, pause nonessential spending, no new autonomous spending, cooperate with investigators.
+- **Josh (CEO), management changes to Margie (Wed 11/4, 2:39 PM):** the core failure was structural, since the same part of the organization built the technology and judged its safety. (1) An independent Chief Safety Officer reporting to the Board, with authority to ground the fleet; nothing returns without their sign-off. (2) Mateo stays Globex President and leads the fix but loses safety sign-off and recuses from the Board's review. (3) No terminations until the investigation is complete. (4) Driver layoff decisions paused. Josh offered his resignation, leaving it to the Board.
+- *Why:* fixes the root cause without scapegoating IT (consistent with Mateo's earlier support for them), and the resignation offer shows accountability at the top without leaving the company leaderless.
+- *Where we overrode the AI:* asked about management changes, the app's advisor recommended starting an assessment and reporting back later. With the Board meeting two days away, we treated that as dodging the question and gave a direct answer.
 
 ## Mistakes we caught (and what we learned)
 
@@ -103,5 +121,5 @@ For the Board presentation on Friday, Nov 6. Each entry is what we learned, what
 
 ## Still open
 
-- Griffin: financial impact email (commercial loss, daily revenue at risk, cash vs. debt, litigation and insurance, victim support fund).
-- Josh: next public update (promised within 48 hours of Sun 5:14 PM). Today's statement about Alexa's death may cover it.
+- Josh: next public update (promised within 48 hours of Sun 5:14 PM, so by about 5 PM Tue). Cover the walkout and the driver commitments, and send it to news outlets and social media.
+- Executive summary to Jenny by Thu 11/5, 3:09 PM; slides and summary posted to Canvas before Fri 3:09 PM.
