@@ -22,7 +22,7 @@ export function TeamDecisionEditor({id,saved,suggestion}:{id:string;saved:string
    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm leading-relaxed focus:border-slate-900 focus:outline-none"/>
   <div className="mt-2 flex flex-wrap items-center gap-2">
    <button type="button" onClick={save} disabled={pending||(!text.trim()&&!saved)} className={`${btn} border-slate-900 bg-slate-900 text-white hover:bg-slate-700`}>{pending?'Saving…':'Save team decision'}</button>
-   {!text.trim()&&suggestion&&<button type="button" onClick={()=>setText(suggestion)} className={`${btn} border-slate-300 text-slate-700 hover:bg-slate-50`}>Start from AI recommendation</button>}
+   {!text.trim()&&suggestion&&<button type="button" onClick={()=>setText(suggestion)} className={`${btn} border-slate-300 text-slate-700 hover:bg-slate-50`}>Start from suggestion</button>}
    {saved&&<button type="button" onClick={()=>{setText(saved);setEditing(false);setError('')}} disabled={pending} className={`${btn} border-transparent text-slate-500 hover:text-slate-800`}>Cancel</button>}
    {error&&<p role="alert" className="text-sm text-red-700">{error}</p>}
   </div>

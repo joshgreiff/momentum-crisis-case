@@ -1,4 +1,4 @@
-# Tips for the Crisis Case (from Jenny Petitto, recitation leader)
+# Tips for the Crisis Case (from the recitation leader)
 
 - Emails will be initiated four times during recitation and at various times over the next several days, including evenings and weekends. Teams should respond to the issue and to the FCOB inbox within 24 hours.
 - First questions as a team: what are the problems, what are the underlying causes, and what can we do about them? Take the initiative now; do not wait to be told what to do.

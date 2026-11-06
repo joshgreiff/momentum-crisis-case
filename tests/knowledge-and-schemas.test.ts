@@ -10,7 +10,7 @@ describe('knowledge library',()=>{
   const k=await loadKnowledge();
   const names=k.sources.map(s=>s.name);
   expect(names.filter(n=>/transcript\.txt$/.test(n))).toHaveLength(6);
-  expect(names.some(n=>n.endsWith('.md')&&n.startsWith('Pasted markdown'))).toBe(true);
+  expect(names.some(n=>n.endsWith('.md')&&n.startsWith('Momentum case'))).toBe(true);
   const docx=k.sources.find(s=>s.name.endsWith('.docx'))!;
   expect(docx.kind).toBe('Exhibit document');
   expect(docx.text).toContain('Fleet size: 134,382 trucks');

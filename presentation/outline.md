@@ -13,12 +13,18 @@ The Board asked to prioritize: what we've done, the plan going forward, and **th
 
 **Timing (about 11 minutes talking, 4 for questions):** Josh 2 min, Aman 1.5, Emily 1.5, Mikey 1.5, Mateo 1, Griffin 2, Josh closes 1.
 
-## Josh (CEO): slides 1–5
+## Josh (CEO): slides 1–5 (aim for 2 minutes)
 
-- **Title and agenda (1–3):** introduce the team in one line and move on.
-- **Executive summary (4):** "Our response had four parts: protect people, own the truth, support those affected, and fix the structure that failed."
-- **Decision timeline (5):** walk Friday to Wednesday in one breath each. Don't read the boxes.
-- **Our tool (one sentence, no slide):** "I built a tool with a full timeline of every email we received and sent, plus the case facts, so the whole team stayed coordinated."
+- **Intro (1–3):** "I'm Josh Greiff, CEO of Momentum. I'll cover how we responded and where we go from here."
+- **Values (4, executive summary):** "We worked from four values: safety, transparency, our people, and recovery."
+  - **Safety** came before everything. We were devastated, and our first job was supporting the people affected and making sure it couldn't happen again.
+  - **Transparency** (slide label changed from Accountability): share what we knew as quickly as possible. Getting caught covering ourselves would have made everything worse.
+  - **Our people:** there's no business without our employees and drivers. We hold ourselves accountable, but we fix the system instead of scapegoating individuals.
+  - **Recovery:** structural changes, including to leadership, which I'll come back to. (Save the resignation for the close.)
+- **Decision timeline (5):** "Within hours we grounded the fleet, and within 48 hours we publicly disclosed the cause, including that we'd known for a month."
+- **Our crisis command center (no slide):** "I built a crisis command center every executive could access. It kept every email and update we received in order, plus every decision we made in response, so we could lay out the facts, catch conflicting messages and stay coordinated. When our first Amazon email described the suspension as hypothetical, we caught it and corrected it the next day."
+- **Hand off:** "We can go into any of these decisions in detail. Aman will start with operations."
+- Avoid: "taken aback" (we knew for a month), "people make mistakes," calling it a "case" application, filler words.
 
 ## Aman (COO): slides 6–7
 

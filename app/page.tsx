@@ -33,7 +33,7 @@ const stateDot:Record<RunState,string>={running:'bg-blue-500 animate-pulse',stal
 const stateText:Record<RunState,string>={running:'Analyzing',stalled:'Stalled',failed:'Failed',done:'Analyzed'};
 const strings=(v:unknown)=>Array.isArray(v)?v.filter((x):x is string=>typeof x==='string'):[];
 const fmt=(iso:string)=>new Date(iso).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-const WORKFLOW=[['New crisis update','Paste a facilitator update (or receive it by email).'],['Fact extraction','Confirmed facts are separated from assumptions.'],['Six executive analyses','CEO, Globex, COO, CFO, CMO and CHRO assess it independently.'],['CEO recommendation','One consolidated, AI-proposed response.'],['Team review','Your executive team decides. Nothing is automatic.']];
+const WORKFLOW=[['New crisis update','Paste a facilitator update (or receive it by email).'],['Fact extraction','Confirmed facts are separated from assumptions.'],['Six executive analyses','CEO, Globex, COO, CFO, CMO and CHRO assess it independently.'],['Suggested response','One consolidated starting point.'],['Team decision','The executive team decides and records what it sent.']];
 
 export default async function Home({searchParams}:{searchParams:Promise<{event?:string;view?:string}>}){
  const params=await searchParams;
@@ -71,8 +71,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
      <span className="hidden text-xs text-slate-400 lg:inline">{TEAM.label}</span>
     </Link>
     <div className="flex items-center gap-5 text-xs text-slate-300">
-     <span aria-label="Dashboard counts"><b className="text-white">{instructorCount}</b> instructor updates · <b className="text-white">{events.length-instructorCount}</b> practice · <b className="text-white">{analyses.length}</b> analyses · <b className="text-white">{pending}</b> awaiting review · <b className="text-white">{decisions.length-pending}</b> team decisions</span>
-     <Link href="/presentation" className="rounded-md border border-slate-600 px-3 py-1.5 text-sm font-semibold text-slate-100 hover:border-slate-300">Presentation</Link>
+     <span aria-label="Dashboard counts"><b className="text-white">{instructorCount}</b> updates · <b className="text-white">{decisions.length-pending}</b> responses recorded</span>
      {consoleEnabled&&<Link href="/?view=ask" aria-current={showAsk?'page':undefined} className={`rounded-md border px-3 py-1.5 text-sm font-semibold ${showAsk?'border-white bg-white/10 text-white':'border-slate-600 text-slate-100 hover:border-slate-300'}`}>Ask about the case</Link>}
      {consoleEnabled&&<Link href="/?view=new" className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-slate-900 hover:bg-slate-200">+ New crisis update</Link>}
      {access.mode==='passcode'&&<form action={signOut}><button type="submit" className="text-xs text-slate-400 hover:text-white">Sign out</button></form>}
@@ -87,7 +86,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
      <Link href={`/?event=${e.id}`} aria-current={active?'page':undefined} className={`block border-l-2 py-2.5 pl-4 pr-2 ${active?'border-slate-900 bg-white':'border-transparent hover:bg-white/60'}`}>
       <p className="flex items-center gap-2 text-[11px] text-slate-500"><span className={`h-1.5 w-1.5 rounded-full ${stateDot[s]}`} title={stateText[s]}/>{e.is_demo?<span className="rounded border border-dashed border-slate-400 px-1 text-[10px] uppercase tracking-wide">Practice</span>:<span className="font-semibold text-slate-700">Update {updateNumber.get(e.id)}</span>} · {fmt(e.received_at)}</p>
       <p className={`mt-0.5 line-clamp-2 text-sm ${active?'font-medium text-slate-900':e.is_demo?'text-slate-500':'text-slate-700'}`}>{e.subject}</p>
-      {d?<p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{hasTeamDecision(d)?'Team decision recorded':'Proposal awaiting review'}</p>:s!=='done'&&<p className="mt-1 text-[11px] text-slate-500">{stateText[s]}</p>}
+      {d?<p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{hasTeamDecision(d)?'Response recorded':'No response recorded'}</p>:s!=='done'&&<p className="mt-1 text-[11px] text-slate-500">{stateText[s]}</p>}
      </Link></li>})}</ol>:<p className="mt-3 text-sm text-slate-500">No updates yet.</p>}
    </nav>
 
@@ -95,7 +94,7 @@ export default async function Home({searchParams}:{searchParams:Promise<{event?:
     {error&&<p role="alert" className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</p>}
     {showAsk?<AskView items={questions} error={questionsError}/>
     :showForm?<NewUpdate consoleEnabled={consoleEnabled}/>
-    :selected?<EventView event={selected} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled}/>
+    :selected?<EventView event={selected} number={updateNumber.get(selected.id)} analyses={analyses.filter(a=>a.event_id===selected.id)} decision={decisions.find(d=>d.event_id===selected.id)} state={eventState(selected,now)} consoleEnabled={consoleEnabled}/>
     :<p className="text-sm text-slate-500">No crisis update selected.</p>}
    </main>
   </div>
@@ -106,7 +105,7 @@ function NewUpdate({consoleEnabled}:{consoleEnabled:boolean}){
  return <>
   <div>
    <h1 className="text-2xl font-semibold text-slate-900">New crisis update</h1>
-   <p className="mt-1 text-sm text-slate-500">Turn a facilitator update into a proposed executive response in about a minute.</p>
+   <p className="mt-1 text-sm text-slate-500">Add an update to the timeline and see each executive's perspective in about a minute.</p>
   </div>
   <ol className="grid gap-4 border-y border-slate-200 py-4 sm:grid-cols-5">{WORKFLOW.map(([t,d],i)=><li key={t}><p className="text-xs font-semibold text-slate-900">{i+1}. {t}</p><p className="mt-0.5 text-xs leading-snug text-slate-500">{d}</p></li>)}</ol>
   <Block label="Crisis update">
@@ -119,7 +118,7 @@ function AskView({items,error}:{items:QuestionItem[];error:string}){
  return <>
   <div>
    <h1 className="text-2xl font-semibold text-slate-900">Ask about the case</h1>
-   <p className="mt-1 text-sm text-slate-500">Answers draw on the case reading, lectures, course tips, every instructor update, and everything the team has recorded as sent. Advisory only; it never sends anything.</p>
+   <p className="mt-1 text-sm text-slate-500">Answers draw on the case materials, every update, and everything the team has sent. Advisory only.</p>
   </div>
   <Block label="Question" aside={<span className="text-xs text-slate-500">Private · only visible in this browser</span>}>
    {error?<p className="text-sm text-amber-700">{error}</p>:<Questions items={items} students={ROLES.map(r=>ASSIGNMENTS[r].student)}/>}
@@ -127,7 +126,7 @@ function AskView({items,error}:{items:QuestionItem[];error:string}){
  </>;
 }
 
-function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:EventRow;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean}){
+function EventView({event:x,number,analyses,decision,state,consoleEnabled}:{event:EventRow;number:number|undefined;analyses:AgentAnalysisRow[];decision:DecisionRow|undefined;state:RunState;consoleEnabled:boolean}){
  const running=state==='running',broken=state==='failed'||state==='stalled';
  const facts=strings(x.facts),assumptions=strings(x.assumptions);
  const d=decisionDetails(decision);
@@ -151,7 +150,7 @@ function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:Event
 
  return <>
   <div>
-   <p className="text-xs text-slate-500">{x.is_demo?<span className="mr-1 rounded border border-dashed border-slate-400 px-1 text-[10px] font-medium uppercase tracking-wide text-slate-600">Practice · not part of the simulation record</span>:<span className="mr-1 rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">Instructor update</span>}{fmt(x.received_at)} · {x.sender||'Unknown sender'} · {x.source==='manual'?'Dashboard':'Email'}{x.attempts>1?` · attempt ${x.attempts}`:''}</p>
+   <p className="text-xs text-slate-500">{x.is_demo?<span className="mr-1 rounded border border-dashed border-slate-400 px-1 text-[10px] font-medium uppercase tracking-wide text-slate-600">Practice · not part of the simulation record</span>:<span className="mr-1 rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">Update {number}</span>}{fmt(x.received_at)} · From {x.sender||'unknown sender'}</p>
    <h1 className="mt-1 text-2xl font-semibold leading-tight text-slate-900">{x.subject}</h1>
    <div className="mt-3 flex flex-wrap items-center gap-4">
     <ProcessSteps states={steps}/>
@@ -178,12 +177,12 @@ function EventView({event:x,analyses,decision,state,consoleEnabled}:{event:Event
    </More>
   </Block>
 
+  <TeamDecision decision={decision}/>
+
   <RecommendedResponse decision={decision} pendingNote={pendingNote}/>
 
   <Block label="Executive perspectives" aside={<span className="text-xs text-slate-500">{done} of {ROLES.length} complete</span>}>
    <ExecutiveTabs items={items} running={running}/>
   </Block>
-
-  <TeamDecision decision={decision}/>
  </>;
 }

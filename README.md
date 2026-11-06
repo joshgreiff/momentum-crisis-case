@@ -1,6 +1,6 @@
 # Momentum Crisis Command Center
 
-Petitto / Team #6 / 2:15 — BUSMHR 2292 crisis simulation (Oct 30 – Nov 6, 2026).
+Team 6 — BUSMHR 2292 crisis simulation (Oct 30 – Nov 6, 2026).
 
 A Next.js, Supabase and OpenAI tool that turns each crisis update into six executive analyses and one AI-proposed CEO recommendation for the team to review and record a decision on. Nothing is sent or decided automatically.
 

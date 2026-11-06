@@ -29,7 +29,7 @@ export function ExecutiveTabs({items,running}:{items:ExecutiveItem[];running:boo
   {item&&<div id="executive-detail" role="tabpanel" aria-label={`${item.role} full analysis`} className="mt-4 rounded-md border border-slate-200 bg-slate-50/60 p-5">
    <div className="flex flex-wrap items-baseline justify-between gap-2">
     <p className="text-base font-semibold text-slate-900">{item.student} · {item.studentTitle}</p>
-    <p className="text-xs text-slate-500">AI analysis for the {item.role} role ({item.name} in the case)</p>
+    <p className="text-xs text-slate-500">{item.role} perspective ({item.name} in the case)</p>
    </div>
    {item.analysis?<Detail a={item.analysis}/>:item.legacyText?<p className="mt-3 whitespace-pre-wrap text-sm">{item.legacyText}</p>:<p className="mt-3 text-sm text-slate-500">{running?'This analysis is still in progress.':'No analysis available.'}</p>}
   </div>}
@@ -38,7 +38,7 @@ export function ExecutiveTabs({items,running}:{items:ExecutiveItem[];running:boo
 
 function Detail({a}:{a:AgentAnalysisDisplay}){
  return <div className="mt-4 grid gap-6 md:grid-cols-2">
-  <Bullets title="Proposed recommendations" items={a.recommendations.map(r=><><Chip color="blue">{r.priority.replace('_',' ')}</Chip> {r.action}<span className="block text-slate-500">{r.rationale}</span></>)} empty="None"/>
+  <Bullets title="Recommendations" items={a.recommendations.map(r=><><Chip color="blue">{r.priority.replace('_',' ')}</Chip> {r.action}<span className="block text-slate-500">{r.rationale}</span></>)} empty="None"/>
   <Bullets title="Risks" items={a.risks.map(r=><><Chip color={levelTone(r.impact)}>impact {r.impact}</Chip> <Chip>likelihood {r.likelihood}</Chip> {r.risk}<span className="block text-slate-500">Mitigation: {r.mitigation}</span></>)} empty="None identified"/>
   <Bullets title="Confirmed facts" items={a.confirmed_facts.map(f=><>{f.fact} <span className="text-slate-400">· {f.source}</span></>)} empty="None identified"/>
   <Bullets title="Assumptions (unconfirmed)" items={a.assumptions} empty="None stated"/>

@@ -1,4 +1,4 @@
-# Momentum crisis: decision log (Team #6, Petitto, 2:15)
+# Momentum crisis: decision log (Team 6)
 
 For the Board presentation on Friday, Nov 6. Each entry is what we learned, what we did, and why. Full text of every email is recorded in the Crisis Command Center app under the matching update.
 

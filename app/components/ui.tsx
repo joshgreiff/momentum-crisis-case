@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
 
-export const STEP_LABELS=['Update','Facts','Six executives','CEO recommendation','Team review'] as const;
+export const STEP_LABELS=['Update','Facts','Six executives','Suggestion','Our response'] as const;
 export type StepState='done'|'active'|'pending'|'failed'|'review';
 
 const tone={
