@@ -1,10 +1,10 @@
 # Board presentation cheat sheets (Fri 11/6)
 
-15 minutes total including Board questions, so about 2 minutes each. Jenny's tips: don't summarize the case (the Board knows it), don't repeat a point someone already made, use numbers, and expect interruptions ("why did you do this?").
+15 minutes total including Board questions, so about 1.5–2 minutes each. Jenny's tips: don't summarize the case (the Board knows it), don't repeat a point someone already made, use numbers, and expect interruptions ("why did you do this?"). When interrupted, pull up the relevant slide and answer; we won't get to every slide. Slides are due on Canvas by 1:00 PM; the slide numbers below match the Canva deck.
 
 ---
 
-## Josh Greiff, CEO (open and close)
+## Josh Greiff, CEO (slides 1–5, 11 with Mateo, 14)
 
 **Open:** three crashes, two deaths (Ashley Williams, our driver; Alexa, a student on the Pittsburgh bus), many injured. Then our principles:
 1. Safety first, even at a cost
@@ -28,11 +28,11 @@
 - *You promised the public an update within 48 hours. Did you deliver?* Yes. Mikey's statement went to FOX, CNN, the Dispatch, the Post-Gazette and the Express-News and was posted on X and Facebook on Tuesday at 12:31 PM, within the window.
 - *Why should we keep you?* I've owned every decision this week, and changing leaders in the middle of an investigation adds risk. But it's your call, and I'll support either decision.
 - *Why not fire the people who ignored the glitch?* The failure was structural: the same group built the technology and judged its safety. We fixed the structure now; individual accountability follows the investigation's findings, not the headlines.
-- *Did you use AI to make these decisions?* We built a tool that analyzed each update from every executive's view. It suggested; we decided, and we went against it several times (the walkout, Alexa's family, and management changes, where it said to study it rather than answer).
+- *(Only if asked) Did you use AI to make these decisions?* We used it to organize and pressure-test, not to decide. The tool kept a timeline of every email and the case facts, and drafted analysis from each executive's view. We went against it several times: on the walkout, Alexa's family, and management changes, where it said to study the question rather than answer it.
 
 ---
 
-## Aman Chugh, COO
+## Aman Chugh, COO (slides 6–7)
 
 **Key points:**
 - Halted all operations the day of the crashes and ordered a full headcount of drivers within the hour
@@ -46,7 +46,7 @@
 
 ---
 
-## Mateo Del Toro, Globex CEO
+## Mateo Del Toro, Globex CEO (slide 11 with Josh)
 
 **Key points:**
 - IT confirmed the crashes came from a glitch in our own software; 95% certain there was no hack (no evidence of outside intrusion)
@@ -65,7 +65,7 @@
 
 ---
 
-## Mikey Campbell, CMO
+## Mikey Campbell, CMO (slide 7 commercial, slide 10)
 
 **Key points:**
 - Pulled the commercial: about $8M spent ($1M production + $7M network fees), recovered about $0.7M (10% of fees), so roughly a $7.3M loss. Airing autonomous-truck ads during the crisis would have been tone-deaf
@@ -79,7 +79,7 @@
 
 ---
 
-## Emily Tang, CHRO
+## Emily Tang, CHRO (slides 8–9)
 
 **Key points:**
 - Families: condolences to the Williams family (Josh); Alexa's family reached through the school district, with funeral and medical costs covered and Emily as the one contact, no pressure to respond; grief counseling offered to the school
@@ -89,11 +89,12 @@
 **Likely questions:**
 - *Why not contact Alexa's family directly?* A letter from the company they blame can feel like PR. We offered support through the district and let them choose.
 - *Isn't pausing layoffs just delaying the inevitable?* It's a pause, not a promise. We won't make job decisions mid-crisis without the facts, and right now drivers are running every delivery.
+- *Why didn't the CEO write to Alexa's family?* Same reason: a letter from the CEO of the company they blame can feel like PR. Going through the district let the family decide whether to engage.
 - *Did the walkout happen?* No. HR reported Tuesday at 3 PM that it was avoided after management's response (listening session and specific safety commitments). Trust still needs rebuilding.
 
 ---
 
-## Griffin Lewis, CFO
+## Griffin Lewis, CFO (slides 12–13)
 
 **Key numbers (Exhibits 6–8):**
 - 2020 revenue $75.8B (about $208M a day); net income $8.1B
